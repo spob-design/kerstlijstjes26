@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Kerstlijstjes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎄</text></svg>">
+<style>
+  :root {
+    --text: #37352f;
+    --muted: #787774;
+    --faint: #a5a29d;
+    --line: #e9e9e7;
+    --hover: #f7f7f5;
+    --bg: #ffffff;
+    --accent: #2383e2;
+    --danger: #e03e3e;
+    --radius: 8px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  button, input, textarea { font: inherit; color: inherit; }
+  a { color: inherit; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 96px; }
+  @media (max-width: 600px) { .wrap { padding: 28px 18px 72px; } }
+
+  /* Header */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; margin-bottom: 28px; }
+  .crumb { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 14px; padding: 4px 8px; margin-left: -8px; border-radius: 6px; }
+  .crumb:hover { background: var(--hover); color: var(--text); }
+  h1 { font-size: 40px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; }
+  @media (max-width: 600px) { h1 { font-size: 30px; } }
+  .sub { color: var(--muted); margin: 0 0 32px; }
+  .emoji { font-size: 56px; line-height: 1; margin-bottom: 14px; display: block; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 6px 12px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .12s; }
+  .btn:hover { background: var(--hover); }
+  .btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
+  .btn.primary:hover { background: #000; }
+  .btn.ghost { border-color: transparent; color: var(--muted); }
+  .btn.ghost:hover { color: var(--text); }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  /* Login */
+  .login { max-width: 360px; margin: 12vh auto 0; }
+  .field { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font-size: 16px; outline: none; background: #fff; transition: border-color .12s, box-shadow .12s; }
+  .field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(35,131,226,.15); }
+  .login .btn { width: 100%; justify-content: center; padding: 10px 12px; font-size: 15px; margin-top: 10px; }
+  .error { color: var(--danger); font-size: 14px; margin-top: 10px; min-height: 21px; }
+
+  /* Tegels */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .tile { padding: 14px; gap: 10px; }
+    .tile .count { margin-top: -8px; }
+  }
+  .item.pending { opacity: .5; pointer-events: none; }
+  .loading { margin-top: 12vh; text-align: center; }
+  .tile { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; text-decoration: none; color: inherit; transition: background .12s, box-shadow .12s, transform .12s; }
+  .tile:hover { background: var(--hover); box-shadow: 0 1px 2px rgba(15,15,15,.04), 0 4px 12px rgba(15,15,15,.05); }
+  .tile:active { transform: scale(.99); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 17px; }
+  .tile .name { font-weight: 600; font-size: 17px; }
+  .tile .count { color: var(--muted); font-size: 14px; margin-top: -10px; }
+
+  /* Lijst */
+  .head { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .head .avatar { width: 52px; height: 52px; font-size: 22px; }
+  .list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 4px; border-bottom: 1px solid var(--line); }
+  .item .dot { flex: none; width: 6px; height: 6px; margin-top: 10px; border-radius: 50%; background: var(--text); }
+  .item .body { flex: 1; min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .item .body a.link { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; color: var(--text); text-decoration: none; border-bottom: 1px solid rgba(55,53,47,.25); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+  .item .body a.link:hover { border-bottom-color: var(--text); }
+  .item .body a.link .host { color: var(--muted); font-size: 14px; }
+  .empty { color: var(--faint); padding: 28px 4px; border-bottom: 1px solid var(--line); }
+
+  /* Bewerkmodus */
+  .editing .item { padding: 8px 4px; }
+  .editing .item:hover { background: var(--hover); }
+  .item textarea.inline { flex: 1; min-width: 0; border: none; outline: none; resize: none; background: transparent; padding: 3px 0; line-height: 1.5; overflow: hidden; }
+  .item .tools { display: flex; gap: 2px; opacity: .35; transition: opacity .12s; }
+  .item:hover .tools, .item:focus-within .tools { opacity: 1; }
+  @media (hover: none) { .item .tools { opacity: 1; } }
+  .icon { border: none; background: none; width: 30px; height: 30px; border-radius: 6px; display: grid; place-items: center; cursor: pointer; color: var(--muted); font-size: 15px; }
+  .icon:hover { background: #ebebea; color: var(--text); }
+  .icon.del:hover { color: var(--danger); }
+  .icon:disabled { visibility: hidden; }
+
+  .composer { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; transition: border-color .12s, box-shadow .12s; }
+  .composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(35,131,226,.15); }
+  .composer textarea { width: 100%; border: none; outline: none; resize: none; min-height: 48px; background: transparent; line-height: 1.5; }
+  .composer .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+  .hint { color: var(--faint); font-size: 13px; }
+  @media (hover: none) { .hint { display: none; } }
+
+  .banner { background: #fbf3db; color: #5c4a14; border-radius: 6px; padding: 10px 12px; font-size: 14px; margin-bottom: 20px; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--text); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .foot { margin-top: 56px; display: flex; justify-content: center; }
+</style>
+</head>
+<body>
+<main class="wrap" id="app" aria-live="polite"></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// ▼ Plak hier de web-app-URL van je Google Apps Script (eindigt op /exec)
+const API_URL = 'https://script.google.com/macros/s/AKfycbynOcuMsUdZi5kXrUX_q0mFzIBh0tMaRxiaSEGUWJ44F0wUP1UPeM0GqnYp0cp9eENX/exec';
+
+(() => {
+  'use strict';
+  const app = document.getElementById('app');
+  // Kleur per persoon: [achtergrond, letter]
+  const COLORS = {
+    Papa:    ['#e6f2e6', '#3f7d4f'], // groen
+    Mama:    ['#dff3f0', '#23867a'], // appelblauwzeegroen
+    Dorien:  ['#fbe2e2', '#c4423d'], // rood
+    Michiel: ['#e3eefb', '#2f6fc1'], // blauw
+    Hanna:   ['#fbe6f0', '#c24a87'], // roze
+    Leia:    ['#efeafb', '#7e62c4'], // lavendel
+    Kiran:   ['#fdeadb', '#d2690f'], // oranje
+  };
+  const FALLBACK = ['#f1f1ef', '#787774'];
+  let state = { people: [], lists: {} };
+  let editing = false;
+
+  // ── Hulpfuncties ──
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // Familiecode wordt op dit toestel onthouden
+  const CODE_KEY = 'kerstlijst-code';
+  const store = {
+    get() { try { return localStorage.getItem(CODE_KEY) || ''; } catch { return ''; } },
+    set(v) { try { localStorage.setItem(CODE_KEY, v); } catch {} },
+    clear() { try { localStorage.removeItem(CODE_KEY); } catch {} },
+  };
+  let code = store.get();
+
+  // Geen extra headers: zo blijft het een "simple request" die Google Apps Script toelaat.
+  async function api(action, payload = {}) {
+    let data;
+    try {
+      const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, code, ...payload }) });
+      data = await res.json();
+    } catch {
+      throw new Error('Geen verbinding met de server. Probeer opnieuw.');
+    }
+    if (data.auth) {
+      if (action !== 'login') { store.clear(); code = ''; showLogin(); }
+      throw new Error(data.error);
+    }
+    if (data.lists) state.lists = data.lists;
+    if (data.error) throw new Error(data.error);
+    return data;
+  }
+
+  // Herlaadt na een fout, zodat het scherm terug klopt met wat bewaard is.
+  async function resync(name) {
+    try { await api('state'); } catch {}
+    name ? showPerson(name) : route();
+  }
+
+  function avatar(name) {
+    const [bg, fg] = COLORS[name] || FALLBACK;
+    return `<div class="avatar" style="background:${bg};color:${fg}" aria-hidden="true">${esc(name[0])}</div>`;
+  }
+
+  // Tekst met klikbare links (toont de website i.p.v. de volledige URL)
+  function linkify(text) {
+    const re = /(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"])/gi;
+    let out = '', last = 0, m;
+    while ((m = re.exec(text))) {
+      out += esc(text.slice(last, m.index));
+      let label = m[1];
+      try {
+        const u = new URL(m[1]);
+        const host = u.hostname.replace(/^www\./, '');
+        let path = decodeURIComponent(u.pathname).replace(/\/$/, '');
+        if (path.length > 36) path = path.slice(0, 34) + '…';
+        label = `<span>${esc(host)}</span>${path ? `<span class="host">${esc(path)}</span>` : ''}`;
+      } catch { label = esc(m[1]); }
+      out += `<a class="link" href="${esc(m[1])}" target="_blank" rel="noopener noreferrer">${label}&nbsp;↗</a>`;
+      last = m.index + m[1].length;
+    }
+    return out + esc(text.slice(last));
+  }
+
+  function autosize(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+
+  const countLabel = n => n === 0 ? 'Nog leeg' : n === 1 ? '1 wens' : `${n} wensen`;
+
+  // ── Schermen ──
+  function showLogin() {
+    document.title = 'Kerstlijstjes';
+    app.innerHTML = `
+      <form class="login" id="loginForm" autocomplete="off">
+        <span class="emoji">🎄</span>
+        <h1>Kerstlijstjes</h1>
+        <p class="sub">Geef de familiecode in om verder te gaan.</p>
+        <input class="field" id="code" type="password" placeholder="Familiecode" autocomplete="current-password" required>
+        <button class="btn primary" type="submit">Verder</button>
+        <div class="error" id="loginError"></div>
+      </form>`;
+    const form = document.getElementById('loginForm');
+    const input = document.getElementById('code');
+    input.focus();
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      try {
+        const d = await api('login', { code: input.value.trim() });
+        code = input.value.trim();
+        store.set(code);
+        state.people = d.people;
+        route();
+      } catch (err) {
+        document.getElementById('loginError').textContent = err.message;
+        input.select();
+      } finally { btn.disabled = false; }
+    });
+  }
+
+  function showHome() {
+    editing = false;
+    document.title = 'Kerstlijstjes';
+    app.innerHTML = `
+      <span class="emoji">🎄</span>
+      <h1>Kerstlijstjes</h1>
+      <p class="sub">Kies een persoon om het lijstje te bekijken of bewerken.</p>
+      <div class="grid">
+        ${state.people.map(p => `
+          <a class="tile" href="#/${encodeURIComponent(p)}">
+            ${avatar(p)}
+            <div class="name">${esc(p)}</div>
+            <div class="count">${countLabel((state.lists[p] || []).length)}</div>
+          </a>`).join('')}
+      </div>
+      <div class="foot"><button class="btn ghost" id="logout">Afmelden</button></div>`;
+    document.getElementById('logout').onclick = () => { store.clear(); code = ''; showLogin(); };
+  }
+
+  function showPerson(name) {
+    const items = state.lists[name] || [];
+    document.title = `Lijstje van ${name}`;
+    app.innerHTML = `
+      <div class="topbar">
+        <a class="crumb" href="#/">← Alle lijstjes</a>
+        <button class="btn ${editing ? 'primary' : ''}" id="toggle">
+          ${editing ? '✓ Klaar' : '✎ Wenslijst aanvullen'}
+        </button>
+      </div>
+      ${editing ? `<div class="banner">Je bewerkt het lijstje van <strong>${esc(name)}</strong>. Wijzigingen worden meteen bewaard.</div>` : ''}
+      <div class="head">${avatar(name)}<h1>${esc(name)}</h1></div>
+      <p class="sub">${countLabel(items.length)}</p>
+      <ul class="list ${editing ? 'editing' : ''}" id="list">
+        ${items.length === 0
+          ? `<li class="empty">${editing ? 'Nog niets op dit lijstje. Typ hieronder je eerste wens.' : `${esc(name)} heeft nog niets op het lijstje gezet.`}</li>`
+          : items.map((it, i) => editing ? `
+            <li class="item${it.pending ? ' pending' : ''}" data-id="${esc(it.id)}">
+              <span class="dot"></span>
+              <textarea class="inline" rows="1" aria-label="Wens bewerken">${esc(it.text)}</textarea>
+              <span class="tools">
+                <button class="icon up" title="Omhoog" aria-label="Omhoog" ${i === 0 ? 'disabled' : ''}>↑</button>
+                <button class="icon down" title="Omlaag" aria-label="Omlaag" ${i === items.length - 1 ? 'disabled' : ''}>↓</button>
+                <button class="icon del" title="Verwijderen" aria-label="Verwijderen">✕</button>
+              </span>
+            </li>` : `
+            <li class="item"><span class="dot"></span><div class="body">${linkify(it.text)}</div></li>`).join('')}
+      </ul>
+      ${editing ? `
+        <form class="composer" id="composer">
+          <textarea id="newItem" rows="2" placeholder="Typ een wens of plak een link…"></textarea>
+          <div class="row">
+            <span class="hint">Enter om toe te voegen · Shift+Enter voor een nieuwe regel</span>
+            <button class="btn primary" type="submit">Toevoegen</button>
+          </div>
+        </form>` : ''}`;
+
+    document.getElementById('toggle').onclick = () => { editing = !editing; showPerson(name); if (editing) document.getElementById('newItem')?.focus(); };
+
+    if (!editing) return;
+
+    // Nieuw item
+    const form = document.getElementById('composer');
+    const input = document.getElementById('newItem');
+    input.addEventListener('input', () => autosize(input));
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
+    });
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      // Meteen tonen, daarna op de achtergrond bewaren
+      state.lists[name] = [...(state.lists[name] || []), { id: 'tmp', text, pending: true }];
+      showPerson(name);
+      document.getElementById('newItem').focus();
+      try { await api('add', { person: name, text }); if (editing) refreshList(name); }
+      catch (err) { toast(err.message); resync(name); }
+    });
+
+    // Bestaande items
+    document.querySelectorAll('#list .item').forEach(li => {
+      const id = li.dataset.id;
+      const ta = li.querySelector('textarea');
+      const original = ta.value;
+      autosize(ta);
+      ta.addEventListener('input', () => autosize(ta));
+      ta.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ta.blur(); }
+        if (e.key === 'Escape') { ta.value = original; ta.blur(); }
+      });
+      ta.addEventListener('blur', async () => {
+        const text = ta.value.trim();
+        if (text === original.trim()) return;
+        if (!text) { ta.value = original; autosize(ta); return toast('Gebruik ✕ om een wens te verwijderen.'); }
+        try { await api('update', { person: name, id, text }); toast('Bewaard'); }
+        catch (err) { toast(err.message); ta.value = original; autosize(ta); }
+      });
+      li.querySelector('.del').onclick = async () => {
+        if (!confirm('Deze wens verwijderen?')) return;
+        state.lists[name] = state.lists[name].filter(it => it.id !== id);
+        refreshList(name);
+        try { await api('delete', { person: name, id }); }
+        catch (err) { toast(err.message); resync(name); }
+      };
+      li.querySelector('.up').onclick = () => move(name, id, -1);
+      li.querySelector('.down').onclick = () => move(name, id, 1);
+    });
+  }
+
+  async function move(name, id, dir) {
+    const list = state.lists[name], i = list.findIndex(it => it.id === id), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    [list[i], list[j]] = [list[j], list[i]];
+    refreshList(name);
+    try { await api('move', { person: name, id, dir }); }
+    catch (err) { toast(err.message); resync(name); }
+  }
+
+  // Werkt het scherm bij zonder je half getypte nieuwe wens kwijt te raken.
+  function refreshList(name) {
+    if (!editing || decodeURIComponent(location.hash.replace(/^#\/?/, '')) !== name) return;
+    const input = document.getElementById('newItem');
+    const draft = input ? input.value : '', hadFocus = document.activeElement === input;
+    showPerson(name);
+    const again = document.getElementById('newItem');
+    if (again) { again.value = draft; autosize(again); if (hadFocus) again.focus(); }
+  }
+
+  // ── Navigatie ──
+  function route() {
+    const name = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+    if (name && state.people.includes(name)) showPerson(name);
+    else showHome();
+  }
+  window.addEventListener('hashchange', () => { editing = false; route(); });
+
+  // Ververs bij terugkeren naar het tabblad (niet tijdens het bewerken)
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState !== 'visible' || editing || !state.people.length) return;
+    try { await api('state'); route(); } catch {}
+  });
+
+  // ── Start ──
+  (async () => {
+    if (!code) return showLogin();
+    app.innerHTML = '<p class="sub loading">Lijstjes laden…</p>';
+    try {
+      const d = await api('state');
+      state.people = d.people;
+      route();
+    } catch (err) {
+      if (code) app.innerHTML = `<p class="sub">${esc(err.message)}</p><button class="btn" onclick="location.reload()">Opnieuw proberen</button>`;
+    }
+  })();
+})();
+</script>
+</body>
+</html>
